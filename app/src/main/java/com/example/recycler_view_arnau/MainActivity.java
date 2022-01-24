@@ -1,19 +1,29 @@
 package com.example.recycler_view_arnau;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.os.Bundle;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     ArrayList<Geographic> geographics = new ArrayList<>();
     private RecyclerView recyclerView;
+
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,12 +31,47 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.recyclerView);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
+                drawerLayout,
+                toolbar,
+                R.string.open,
+                R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        onBackPressed();
+        navigationView.setCheckedItem(R.id.nav_home);
 
         initData();
 
         MyAdapter myAdapter = new MyAdapter(geographics, this);
         recyclerView.setAdapter(myAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3, RecyclerView.VERTICAL, false));
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                break;
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     private void initData(){
@@ -121,5 +166,4 @@ public class MainActivity extends AppCompatActivity {
         );
         geographics.add(geographic15);
     }
-
 }
